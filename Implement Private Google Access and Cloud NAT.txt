@@ -1,0 +1,162 @@
+Title: Implement Private Google Access and Cloud NAT
+
+Create a VPC network and firewall rules
+Equivalent Shell command: gcloud compute networks create privatenet --project=qwiklabs-gcp-01-8057320e73f0 --subnet-mode=custom --bgp-routing-mode=regional
+Equivalent Shell command: gcloud compute networks subnets create privatenet-us --project=qwiklabs-gcp-01-8057320e73f0 --range=10.130.0.0/20 --network=privatenet --region=us-central1
+
+Create firewall rule
+Equivalent Shell command: gcloud compute --project=qwiklabs-gcp-01-8057320e73f0 firewall-rules create privatenet-allow-ssh --direction=INGRESS --priority=1000 --network=privatenet --action=ALLOW --rules=tcp:22 --source-ranges=35.235.240.0/20
+
+Create the VM instance with no public IP address
+Equivalent Shell command: gcloud beta compute --project=qwiklabs-gcp-01-8057320e73f0 instances create vm-internal --zone=us-central1-c --machine-type=n1-standard-1 --subnet=privatenet-us --no-address --maintenance-policy=MIGRATE --service-account=799376530374-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --image=debian-9-stretch-v20200902 --image-project=debian-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=vm-internal --reservation-affinity=any
+
+To connect to vm-internal
+Equivalent Shell command: gcloud compute ssh vm-internal --zone us-central1-c --tunnel-through-iap
+
+To test the external connectivity of vm-internal
+Equivalent Shell command: ping -c 2 www.google.com
+
+Task 2 Enable Private Google Access
+Create a Cloud Storage bucket
+Equivalent Shell command: gsutil mb gs://qwiklabs-gcp-01-8057320e73f0-minecraft-backup
+
+Copy an image file into your bucket
+Equivalent Shell command: gsutil cp gs://cloud-training/gcpnet/private/access.svg gs://qwiklabs-gcp-01-8057320e73f0
+
+To copy image from your bucket.
+Equivalent Shell command: gsutil cp gs://qwiklabs-gcp-01-8057320e73f0/*.svg .
+
+To connect to vm-internal, run the following command:
+Equivalent Shell command: gcloud compute ssh vm-internal --zone us-central1-c --tunnel-through-iap
+
+To copy the image to vm-internal
+Equivalent Shell command: gsutil cp gs://[my_bucket]/*.svg .
+Equivalent Shell command: exit
+
+To update the VM instances
+Equivalent Shell command: sudo apt-get update
+
+To connect to vm-internal, run the following command:
+Equivalent Shell command: gcloud compute ssh vm-internal --zone us-central1-c --tunnel-through-iap
+
+To try to re-synchronize the package index of vm-internal
+Equivalent Shell command: sudo apt-get update
+
+To try to re-synchronize the package index of vm-internal
+Equivalent Shell command: sudo apt-get update
+Equivalent Shell command: exit
+
+To re-synchronize the package index of vm-internal.
+Equivalent Shell command: gcloud compute ssh vm-internal --zone us-central1-c --tunnel-through-iap
+Equivalent Shell command: sudo apt-get update
+Equivalent Shell command: exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

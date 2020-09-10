@@ -1,0 +1,169 @@
+Title: Working with Virtual Machines
+
+create the mine-craft VM
+Equivalent Shell command: gcloud beta compute --project=qwiklabs-gcp-01-a44967f262bf instances create mc-server --zone=us-central1-a --machine-type=e2-medium --subnet=default --address=34.123.198.146 --network-tier=PREMIUM --maintenance-policy=MIGRATE --service-account=727820329290-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/trace.append,https://www.googleapis.com/auth/devstorage.read_write --tags=minecraft-server --image=debian-9-stretch-v20200902 --image-project=debian-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=mc-server --create-disk=mode=rw,size=50,type=projects/qwiklabs-gcp-01-a44967f262bf/zones/us-central1-a/diskTypes/pd-ssd,name=minecraft-disk,device-name=minecraft-disk --reservation-affinity=any
+
+Task 2: Prepare the data disk
+
+To create a directory that serves as the mount point for the data disk
+Equivalent Shell command: sudo mkdir -p /home/minecraft
+
+To format the disk.
+Equivalent Shell command: sudo mkfs.ext4 -F -E lazy_itable_init=0,\
+    lazy_journal_init=0,discard \
+    /dev/disk/by-id/google-minecraft-disk
+
+To mount the disk
+Equivalent Shell command: sudo mount -o discard,defaults /dev/disk/by-id/google-minecraft-disk /home/minecraft
+
+Task 3: Install and run the application.
+To update the Debian repositories on the VM.
+Equivalent Shell command: sudo apt-get update
+
+After the repositories are updated, to install the headless JRE.
+Equivalent Shell command: sudo apt-get install -y default-jre-headless
+
+To navigate to the directory where the persistent disk is mounted
+Equivalent Shell command: cd /home/minecraft
+
+
+To install wget
+Equivalent Shell command: sudo apt-get install wget
+
+To download the current Minecraft server JAR file (1.11.2 JAR)
+Equivalent Shell command: sudo wget https://launcher.mojang.com/v1/objects/d0d0fe2b1dc6ab4c65554cb734270872b72dadd6/server.jar
+
+To initialize the Minecraft server
+Equivalent Shell command: sudo java -Xmx1024M -Xms1024M -jar server.jar nogui
+
+To see the files that were created in the first initialization of the Minecraft server
+Equivalent Shell command: sudo ls -l
+
+To edit the EULA
+Equivalent Shell command: sudo nano eula.txt
+
+To install screen
+Equivalent Shell command: sudo apt-get install -y screen
+
+To start your Minecraft server in a screen virtual terminal:
+Equivalent Shell command: sudo screen -S mcs java -Xmx1024M -Xms1024M -jar server.jar nogui
+
+To detach the screen terminal.
+Equivalent Shell command: Ctrl+A, Ctrl+D. 
+
+To reattach the terminal
+Equivalent Shell command: sudo screen -r mcs
+
+To exit the SSH terminal
+exit
+
+To Create a firewall rule
+Equivalent Shell command: gcloud compute --project=qwiklabs-gcp-01-a44967f262bf firewall-rules create minecraft-rule --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:25565 --source-ranges=0.0.0.0/0 --target-tags=minecraft-server
+
+To Create a globally unique bucket name, and store it in the environment variable YOUR_BUCKET_NAME.:
+Equivalent Shell command: export YOUR_BUCKET_NAME=qwiklabs-gcp-01-a44967f262bf
+
+To create the bucket using the gsutil tool, part of the Cloud SDK
+gsutil mb gs://$YOUR_BUCKET_NAME-minecraft-backup
+
+To Create a backup script
+To navigate to your home directory:
+Equivalent Shell command: cd /home/minecraft
+
+To create the script
+Equivalent Shell command: sudo nano /home/minecraft/backup.sh
+
+Copy and paste script into the file:
+#!/bin/bash
+screen -r mcs -X stuff '/save-all\n/save-off\n'
+/usr/bin/gsutil cp -R ${BASH_SOURCE%/*}/world gs://${YOUR_BUCKET_NAME}-minecraft-backup/$(date "+%Y%m%d-%H%M%S")-world
+screen -r mcs -X stuff '/save-on\n'
+
+To make the script executable
+Equivalent Shell command: sudo chmod 755 /home/minecraft/backup.sh
+
+To run the backup script:
+Equivalent Shell command: . /home/minecraft/backup.sh
+
+Open the cron table for editing:
+Equivalent Shell command: sudo crontab -e
+
+Paste in cron job table:
+0 */4 * * * /home/minecraft/backup.sh
+
+Task 6: Server maintenance
+Equivalent Shell command: sudo screen -r -X stuff '/stop\n'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,37 @@
+Title: Console and Cloud Shell
+
+
+To create a bucket
+Equivalent Shell command: gsutil mb gs://qwiklabs-gcp-00-5c39574be9a2	
+
+Upload a file 
+Equivalent Shell command: gsutil cp [MY_FILE] gs://[BUCKET_NAME] 5.png
+
+To identify avaliable regions
+Equivalent Shell command: gcloud compute regions list
+
+to create and verify an environment variable
+Equivalent Shell command: INFRACLASS_REGION=us-west4
+    
+To create an infraclass folder.
+Equivalent Shell command: mkdir infraclass
+
+Create a file called config in the infraclass directory:
+Equivalent Shell command: touch infraclass/config
+
+Append the value of your Region environment variable to the config file:
+Equivalent Shell command: echo INFRACLASS_REGION=$INFRACLASS_REGION >> ~/infraclass/config
+
+To set enviroment variable
+export INFRACLASS_PROJECT_ID=qwiklabs-gcp-00-5c39574be9a2
+
+Append the value of your Project ID environment variable to the config file:
+Equivalent Shell command: echo INFRACLASS_PROJECT_ID=$INFRACLASS_PROJECT_ID >> ~/infraclass/config source infraclass/config
+
+echo $INFRACLASS_PROJECT_ID
+
+Edit the shell profile.
+nano .profile
+source infraclass/config
+
+echo $INFRACLASS_PROJECT_ID
